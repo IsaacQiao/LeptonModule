@@ -201,6 +201,10 @@ int main(int argc, char *argv[])
 	close(fd);
 
 	save_pgm_file();
+	for(int i=0;i<80;i++){
+		for(int j=0;j<80;j++)
+			printf("row %d col %d is %d%x\n", i,j,lepton_image[i][j],lepton_image[i][j]);
+	}
 
 	return ret;
 }
