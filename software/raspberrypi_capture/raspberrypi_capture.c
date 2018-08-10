@@ -197,14 +197,15 @@ int main(int argc, char *argv[])
 	printf("max speed: %d Hz (%d KHz)\n", speed, speed/1000);
 
 	while(transfer(fd)!=59){}
+	for(int i=0;i<60;i++){
+		for(int j=0;j<80;j++)
+			printf("row %d col %d is %d%x\n", i,j,lepton_image[i][j],lepton_image[i][j]);
+	}
 
 	close(fd);
 
 	save_pgm_file();
-	for(int i=0;i<80;i++){
-		for(int j=0;j<80;j++)
-			printf("row %d col %d is %d%x\n", i,j,lepton_image[i][j],lepton_image[i][j]);
-	}
+
 
 	return ret;
 }
