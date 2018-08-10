@@ -93,6 +93,7 @@ static void save_pgm_file(void)
 			}
 		}
 	}
+	
 	printf("maxval = %u\n",maxval);
 	printf("minval = %u\n",minval);
 	
@@ -109,6 +110,40 @@ static void save_pgm_file(void)
 
 	fclose(f);
 }
+
+int print_max_temp(void){
+	int i;
+	int j;
+	unsigned int maxval = 0;
+	unsigned int minval = UINT_MAX;
+
+	for(i=0;i<60;i++)
+	{
+		for(j=0;j<80;j++)
+		{
+			if (lepton_image[i][j] > maxval) {
+				maxval = lepton_image[i][j];
+			}
+			if (lepton_image[i][j] < minval) {
+				minval = lepton_image[i][j];
+			}
+		}
+	}
+	
+	if(maxval<8192){
+		printf("maxval = %u\n",maxval);
+		double t = 25;
+		printf("current max temp in view <= %f\n",t);
+		return maxval;
+	}else{
+		printf("maxval = %u\n",maxval);
+		double t = (maxval-8192)*0.0874+25;
+		printf("current max temp in view = %f\n",t);
+		return maxval;
+	}
+	
+}
+
 
 int transfer(int fd)
 {
@@ -196,16 +231,26 @@ int main(int argc, char *argv[])
 	printf("bits per word: %d\n", bits);
 	printf("max speed: %d Hz (%d KHz)\n", speed, speed/1000);
 
-	while(transfer(fd)!=59){}
-	for(int i=0;i<60;i++){
-		for(int j=0;j<80;j++)
-			printf("row %d col %d is %d%x\n", i,j,lepton_image[i][j],lepton_image[i][j]);
+	//int loop=0;
+	int temp=0;
+	int count_high=0;
+	while(1){
+		while(transfer(fd)!=59){}
+		temp=print_max_temp();
+		if(temp>10000){
+			count_high++;
+		}
+		if(count_high>10){
+			// critical temp keeps more than 15s
+			// trigger alarm
+			count_high=0;
+			save_pgm_file();	
+		}
+		usleep(500000);
+		//loop++;
 	}
 
 	close(fd);
-
-	save_pgm_file();
-
 
 	return ret;
 }
