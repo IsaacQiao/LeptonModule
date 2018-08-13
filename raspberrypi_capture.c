@@ -49,18 +49,19 @@ static uint8_t mode;
 static uint8_t bits = 8;
 static uint32_t speed = 16000000;
 static uint16_t delay;
+char image_name[32];
+
 
 #define VOSPI_FRAME_SIZE (164)
 uint8_t lepton_frame_packet[VOSPI_FRAME_SIZE];
 static unsigned int lepton_image[80][80];
 
-const char save_pgm_file(void)
+static void save_pgm_file(void)
 {
 	int i;
 	int j;
 	unsigned int maxval = 0;
 	unsigned int minval = UINT_MAX;
-	char image_name[32];
 	int image_index = 0;
 
 	do {
@@ -110,7 +111,6 @@ const char save_pgm_file(void)
 	fprintf(f,"\n\n");
 
 	fclose(f);
-	return image_name;
 }
 
 int print_max_temp(void){
