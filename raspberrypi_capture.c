@@ -246,7 +246,7 @@ int main(int argc, char *argv[])
 			// critical temp keeps more than 15s
 			// trigger alarm
 			count_high=0;
-			const char* filename = save_pgm_file();	
+			save_pgm_file();	
 		}
 		usleep(500000);
 		//loop++;
