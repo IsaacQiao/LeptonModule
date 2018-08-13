@@ -110,6 +110,7 @@ const char save_pgm_file(void)
 	fprintf(f,"\n\n");
 
 	fclose(f);
+	return image_name;
 }
 
 int print_max_temp(void){
