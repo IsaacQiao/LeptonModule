@@ -237,7 +237,11 @@ int main(int argc, char *argv[])
 	int temp=0;
 	int count_high=0;
 	while(1){
-		while(transfer(fd)!=59){}
+		int t=0;
+		while(transfer(fd)!=59){
+			t++;
+			printf("%d\n",t );
+		}
 		temp=print_max_temp();
 		if(temp>10000){
 			count_high++;
