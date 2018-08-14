@@ -28,6 +28,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <getopt.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -303,7 +304,7 @@ int main()
 	while(1){
 		// check the server what the state is for fire alarm
 		
-		char fire_alarm[] = use_python_get();
+		char fire_alarm = use_python_get();
 		if(fire_alarm=='0'){
 
 		}else{
