@@ -1,8 +1,8 @@
 
 TARGET = raspberrypi_capture
-LIBS = -lm -L/usr/lib/python3.5/config-3.5m-arm-linux-gnueabihf -lpython3.5
+LIBS = -lm
 CC = gcc
-CFLAGS = -g -Wall -I/usr/include/python3.5
+CFLAGS = -g
 
 .PHONY: default all clean
 

@@ -34,6 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 #include <limits.h>
+#include <python3.5/Python.h>
 
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
@@ -182,6 +183,76 @@ int transfer(int fd)
 	return frame_number;
 }
 
+char use_python_get(){
+	printf("0");
+	
+	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *pValue;
+	printf("1");
+
+	// Initialize the Python Interpreter
+	Py_Initialize();
+	printf("2");
+
+	// Build the name object
+	pName = PyBytes_FromString("py_function");
+	printf("3");
+
+	// Load the module object
+	pModule = PyImport_Import(pName);
+	printf("4");
+
+	// pDict is a borrowed reference 
+	pDict = PyModule_GetDict(pModule);
+	printf("5");
+
+	// pFunc is also a borrowed reference 
+	pFunc = PyDict_GetItemString(pDict, "get_intruder");
+	printf("6");
+
+	pValue = PyObject_CallObject(pFunc, NULL);
+	char return_int = PyBytes_AsString(pValue)[0];
+	Py_DECREF(pValue);
+	Py_DECREF(pModule);
+	Py_DECREF(pName);
+	Py_Finalize();
+	printf("7");
+
+	return return_int;
+}
+
+void use_python_post(char * src){
+	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *pValue;
+
+	// Initialize the Python Interpreter
+	Py_Initialize();
+
+	// Build the name object
+	pName = PyBytes_FromString("py_function");
+
+	// Load the module object
+	pModule = PyImport_Import(pName);
+
+	// pDict is a borrowed reference 
+	pDict = PyModule_GetDict(pModule);
+
+	// pFunc is also a borrowed reference 
+	pFunc = PyDict_GetItemString(pDict, "send_alarm");
+
+	pArgs = PyTuple_New(0);
+	pValue = PyBytes_FromString(src);
+	
+	PyTuple_SetItem(pArgs, 0, pValue);	
+
+	pValue = PyObject_CallObject(pFunc, pArgs);
+
+	
+	Py_DECREF(pArgs);
+
+	Py_DECREF(pValue);
+	Py_DECREF(pModule);
+	Py_DECREF(pName);
+	Py_Finalize();
+}
 
 int main()
 {
@@ -238,21 +309,35 @@ int main()
 	//int loop=0;
 	int temp=0;
 	int count_high=0;
-	while(transfer(fd)!=59){
-		temp=print_max_temp();
-		if(temp>10000){
-			count_high++;
-		}
-		if(count_high>10){
-		// critical temp keeps more than 15s
-				
-			count_high=0;
-			int image_ind = save_pgm_file();
-			printf("%d", image_ind);
-		}
-		usleep(500000);
-	}
+	int t = 1;
+	while(t){
+		// check the server what the state is for fire alarm
+		
+		char fire_alarm = use_python_get();
+		if(fire_alarm=='-1'){
+			t=-1;
+		}else if(fire_alarm=='0'){
 
+		}else{
+			while(transfer(fd)!=59){}
+			temp=print_max_temp();
+			if(temp>10000){
+				count_high++;
+			}
+			if(count_high>10){
+				// critical temp keeps more than 15s
+				
+				count_high=0;
+				int image_ind = save_pgm_file();
+				char image_index[5];
+				memset(&image_index, 0, sizeof(image_index)); // zero out the buffer    
+				sprintf(image_index, "%d", image_ind);
+				// Expected result : "15"
+				use_python_post(image_index);
+			}
+			usleep(500000);
+		}
+	}
 
 	close(fd);
 
