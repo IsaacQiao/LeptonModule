@@ -59,11 +59,11 @@ static void save_pgm_file(void)
 	int j;
 	unsigned int maxval = 0;
 	unsigned int minval = UINT_MAX;
-	char image_name[32];
+	char image_name[256];
 	int image_index = 0;
 
 	do {
-		sprintf(image_name, "IMG_%.4d.jpg", image_index);
+		sprintf(image_name, "/home/pi/LeptonModule/IMG_%.4d.jpg", image_index);
 		image_index += 1;
 		if (image_index > 9999) 
 		{
