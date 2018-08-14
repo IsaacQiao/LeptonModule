@@ -182,6 +182,69 @@ int transfer(int fd)
 	return frame_number;
 }
 
+int use_python_get(){
+	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *pValue;
+
+	// Initialize the Python Interpreter
+	Py_Initialize();
+
+	// Build the name object
+	pName = PyString_FromString("py_function");
+
+	// Load the module object
+	pModule = PyImport_Import(pName);
+
+	// pDict is a borrowed reference 
+	pDict = PyModule_GetDict(pModule);
+
+	// pFunc is also a borrowed reference 
+	pFunc = PyDict_GetItemString(pDict, "get_intruder");
+
+	pValue = PyObject_CallObject(pFunc, NULL);
+	int return_int = PyInt_AsLong(pValue)
+	Py_DECREF(pValue);
+	Py_DECREF(pModule);
+	Py_DECREF(pName);
+	Py_Finalize();
+
+	return return_int;
+}
+
+void use_python_post(int src){
+	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *pValue;
+
+	// Initialize the Python Interpreter
+	Py_Initialize();
+
+	// Build the name object
+	pName = PyString_FromString("py_function");
+
+	// Load the module object
+	pModule = PyImport_Import(pName);
+
+	// pDict is a borrowed reference 
+	pDict = PyModule_GetDict(pModule);
+
+	// pFunc is also a borrowed reference 
+	pFunc = PyDict_GetItemString(pDict, "get_intruder");
+
+	pArgs = PyTuple_New(0);
+	pValue = PyInt_FromLong(atoi(src));
+	
+	PyTuple_SetItem(pArgs, 0, pValue);	
+
+	pValue = PyObject_CallObject(pFunc, pArgs);
+
+	
+	Py_DECREF(pArgs);
+
+	int return_int = PyInt_AsLong(pValue)
+	Py_DECREF(pValue);
+	Py_DECREF(pModule);
+	Py_DECREF(pName);
+	Py_Finalize();
+}
+
 int main()
 {
 	int ret = 0;
@@ -239,23 +302,24 @@ int main()
 	int count_high=0;
 	while(1){
 		// check the server what the state is for fire alarm
-		// fire_alarm=
-		// if(!fire_alarm){}
-		// else{} //start recording.
-		while(transfer(fd)!=59){}
-		temp=print_max_temp();
-		if(temp>10000){
-			count_high++;
-		}
-		if(count_high>10){
-			// critical temp keeps more than 15s
-			// trigger alarm
-			count_high=0;
-			int image_index = save_pgm_file();
-		}
-		usleep(500000);
+		fire_alarm = use_python_get();
+		if(!fire_alarm){
 
-
+		}else{
+			while(transfer(fd)!=59){}
+			temp=print_max_temp();
+			if(temp>10000){
+				count_high++;
+			}
+			if(count_high>10){
+				// critical temp keeps more than 15s
+				
+				count_high=0;
+				int image_index = save_pgm_file();
+				use_python_post(image_index);
+			}
+			usleep(500000);
+		}
 	}
 
 	close(fd);

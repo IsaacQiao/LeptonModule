@@ -42,6 +42,7 @@ def send_alarm(src):
     firebase.patch('/', {'Alert': 'off'})
     push_service.notify_single_device(registration_id=self.registration_id, message_title=message_title,
                                                    message_body=message_body)
+    return 0
 
 
 def get_intruder():
