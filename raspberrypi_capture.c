@@ -315,7 +315,7 @@ int main()
 		
 		char fire_alarm = use_python_get();
 		if(fire_alarm=='-1'){
-			t=-1
+			t=-1;
 		}else if(fire_alarm=='0'){
 
 		}else{
