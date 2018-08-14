@@ -302,7 +302,8 @@ int main()
 	int count_high=0;
 	while(1){
 		// check the server what the state is for fire alarm
-		fire_alarm = use_python_get();
+		
+		int fire_alarm = use_python_get();
 		if(!fire_alarm){
 
 		}else{
