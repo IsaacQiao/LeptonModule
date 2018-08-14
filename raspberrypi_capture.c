@@ -227,7 +227,7 @@ void use_python_post(char * src){
 	pDict = PyModule_GetDict(pModule);
 
 	// pFunc is also a borrowed reference 
-	pFunc = PyDict_GetItemString(pDict, "get_intruder");
+	pFunc = PyDict_GetItemString(pDict, "send_alarm");
 
 	pArgs = PyTuple_New(0);
 	pValue = PyBytes_FromString(src);
