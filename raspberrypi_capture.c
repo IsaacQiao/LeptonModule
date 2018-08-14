@@ -60,17 +60,9 @@ static void save_pgm_file(void)
 	unsigned int maxval = 0;
 	unsigned int minval = UINT_MAX;
 	char image_name[256];
-	int image_index = 0;
 
 	do {
-		sprintf(image_name, "/home/pi/LeptonModule/IMG_%.4d.jpg", image_index);
-		image_index += 1;
-		if (image_index > 9999) 
-		{
-			image_index = 0;
-			break;
-		}
-
+		sprintf(image_name, "/home/pi/LeptonModule/fire.jpg", 0);
 	} while (access(image_name, F_OK) == 0);
 
 	FILE *f = fopen(image_name, "w");
