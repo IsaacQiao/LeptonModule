@@ -34,7 +34,7 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <linux/types.h>
 #include <linux/spi/spidev.h>
 #include <limits.h>
-
+#include <Python.h>
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -49,23 +49,22 @@ static uint8_t mode;
 static uint8_t bits = 8;
 static uint32_t speed = 16000000;
 static uint16_t delay;
-char image_name[32];
-
 
 #define VOSPI_FRAME_SIZE (164)
 uint8_t lepton_frame_packet[VOSPI_FRAME_SIZE];
 static unsigned int lepton_image[80][80];
 
-int save_pgm_file(void)
+static void save_pgm_file(void)
 {
 	int i;
 	int j;
 	unsigned int maxval = 0;
 	unsigned int minval = UINT_MAX;
+	char image_name[32];
 	int image_index = 0;
 
 	do {
-		sprintf(image_name, "fire_%.4d.jpg", image_index);
+		sprintf(image_name, "IMG_%.4d.pgm", image_index);
 		image_index += 1;
 		if (image_index > 9999) 
 		{
@@ -111,7 +110,6 @@ int save_pgm_file(void)
 	fprintf(f,"\n\n");
 
 	fclose(f);
-	return image_index;
 }
 
 int print_max_temp(void){
@@ -182,8 +180,7 @@ int transfer(int fd)
 	return frame_number;
 }
 
-
-int main()
+int main(int argc, char *argv[])
 {
 	int ret = 0;
 	int fd;
@@ -238,21 +235,21 @@ int main()
 	//int loop=0;
 	int temp=0;
 	int count_high=0;
-	while(transfer(fd)!=59){
+	while(1){
+		while(transfer(fd)!=59){}
 		temp=print_max_temp();
 		if(temp>10000){
 			count_high++;
 		}
 		if(count_high>10){
-		// critical temp keeps more than 15s
-				
+			// critical temp keeps more than 15s
+			// trigger alarm
 			count_high=0;
-			int image_ind = save_pgm_file();
-			printf("%d", image_ind);
+			save_pgm_file();	
 		}
 		usleep(500000);
+		//loop++;
 	}
-
 
 	close(fd);
 
