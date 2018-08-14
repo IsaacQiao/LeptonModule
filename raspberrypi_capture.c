@@ -28,7 +28,6 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-#include <string.h>
 #include <getopt.h>
 #include <fcntl.h>
 #include <sys/ioctl.h>
@@ -317,8 +316,11 @@ int main()
 				// critical temp keeps more than 15s
 				
 				count_high=0;
+				int image_ind = save_pgm_file();
 				char image_index[5];
-				itoa(save_pgm_file(), image_index, 10);
+				memset(&image_index, 0, sizeof(image_index)); // zero out the buffer    
+				sprintf(image_index, "%d", image_ind);
+				// Expected result : "15"
 				use_python_post(image_index);
 			}
 			usleep(500000);
