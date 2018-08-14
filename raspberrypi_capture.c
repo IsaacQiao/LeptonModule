@@ -202,7 +202,7 @@ char use_python_get(){
 	pFunc = PyDict_GetItemString(pDict, "get_intruder");
 
 	pValue = PyObject_CallObject(pFunc, NULL);
-	char return_int = PyBytes_AsString(pValue);
+	char return_int = PyBytes_AsString(pValue)[0];
 	Py_DECREF(pValue);
 	Py_DECREF(pModule);
 	Py_DECREF(pName);
