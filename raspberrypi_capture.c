@@ -309,32 +309,9 @@ int main()
 	//int loop=0;
 	int temp=0;
 	int count_high=0;
-	while(1){
-		// check the server what the state is for fire alarm
+	
+	char fire_alarm = use_python_get();
 		
-		char fire_alarm = use_python_get();
-		if(fire_alarm=='0'){
-
-		}else{
-			while(transfer(fd)!=59){}
-			temp=print_max_temp();
-			if(temp>10000){
-				count_high++;
-			}
-			if(count_high>10){
-				// critical temp keeps more than 15s
-				
-				count_high=0;
-				int image_ind = save_pgm_file();
-				char image_index[5];
-				memset(&image_index, 0, sizeof(image_index)); // zero out the buffer    
-				sprintf(image_index, "%d", image_ind);
-				// Expected result : "15"
-				use_python_post(image_index);
-			}
-			usleep(500000);
-		}
-	}
 
 	close(fd);
 
