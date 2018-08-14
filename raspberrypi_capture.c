@@ -35,6 +35,8 @@ OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #include <linux/spi/spidev.h>
 #include <limits.h>
 #include <python3.5/Python.h>
+#include <python3.5/intobject.h>
+
 
 #define ARRAY_SIZE(a) (sizeof(a) / sizeof((a)[0]))
 
@@ -189,7 +191,7 @@ int use_python_get(){
 	Py_Initialize();
 
 	// Build the name object
-	pName = PyString_FromString("py_function");
+	pName = PyBytes_FromString("py_function");
 
 	// Load the module object
 	pModule = PyImport_Import(pName);
@@ -217,7 +219,7 @@ void use_python_post(int src){
 	Py_Initialize();
 
 	// Build the name object
-	pName = PyString_FromString("py_function");
+	pName = PyBytes_FromString("py_function");
 
 	// Load the module object
 	pModule = PyImport_Import(pName);
