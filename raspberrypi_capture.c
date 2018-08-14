@@ -254,7 +254,13 @@ void use_python_post(char * src){
 	Py_Finalize();
 }
 
-int main()
+int main(){
+ printf("%d\n",use_python_get());
+
+ return 0;
+}
+
+/*int main()
 {
 	int ret = 0;
 	int fd;
@@ -342,4 +348,4 @@ int main()
 	close(fd);
 
 	return ret;
-}
+}*/
