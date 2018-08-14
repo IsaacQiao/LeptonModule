@@ -184,7 +184,7 @@ int transfer(int fd)
 	return frame_number;
 }
 
-int use_python_get(){
+char use_python_get(){
 	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *pValue;
 
 	// Initialize the Python Interpreter
@@ -203,7 +203,7 @@ int use_python_get(){
 	pFunc = PyDict_GetItemString(pDict, "get_intruder");
 
 	pValue = PyObject_CallObject(pFunc, NULL);
-	int return_int = PyInt_AsLong(pValue);
+	char return_int = PyBytes_AsString(pValue);
 	Py_DECREF(pValue);
 	Py_DECREF(pModule);
 	Py_DECREF(pName);
@@ -212,7 +212,7 @@ int use_python_get(){
 	return return_int;
 }
 
-void use_python_post(int src){
+void use_python_post(char * src){
 	PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *pValue;
 
 	// Initialize the Python Interpreter
@@ -231,7 +231,7 @@ void use_python_post(int src){
 	pFunc = PyDict_GetItemString(pDict, "get_intruder");
 
 	pArgs = PyTuple_New(0);
-	pValue = PyInt_FromLong(atoi(src));
+	pValue = PyBytes_FromString(src);
 	
 	PyTuple_SetItem(pArgs, 0, pValue);	
 
@@ -240,7 +240,6 @@ void use_python_post(int src){
 	
 	Py_DECREF(pArgs);
 
-	int return_int = PyInt_AsLong(pValue);
 	Py_DECREF(pValue);
 	Py_DECREF(pModule);
 	Py_DECREF(pName);
@@ -305,8 +304,8 @@ int main()
 	while(1){
 		// check the server what the state is for fire alarm
 		
-		int fire_alarm = use_python_get();
-		if(!fire_alarm){
+		char fire_alarm[] = use_python_get();
+		if(fire_alarm=='0'){
 
 		}else{
 			while(transfer(fd)!=59){}
@@ -318,7 +317,8 @@ int main()
 				// critical temp keeps more than 15s
 				
 				count_high=0;
-				int image_index = save_pgm_file();
+				char image_index[5];
+				itoa(save_pgm_file(), image_index, 10);
 				use_python_post(image_index);
 			}
 			usleep(500000);

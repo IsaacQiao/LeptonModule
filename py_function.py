@@ -49,6 +49,6 @@ def get_intruder():
     firebase = firebase.FirebaseApplication('https://homeattender.firebaseio.com/', None)
     r = firebase.get('/Fire', None)
     if(r=='True')
-        return 1
+        return '1'
     else
-        return 0
+        return '0'
