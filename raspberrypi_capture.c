@@ -201,7 +201,7 @@ int use_python_get(){
 	pFunc = PyDict_GetItemString(pDict, "get_intruder");
 
 	pValue = PyObject_CallObject(pFunc, NULL);
-	int return_int = PyInt_AsLong(pValue)
+	int return_int = PyInt_AsLong(pValue);
 	Py_DECREF(pValue);
 	Py_DECREF(pModule);
 	Py_DECREF(pName);
@@ -238,7 +238,7 @@ void use_python_post(int src){
 	
 	Py_DECREF(pArgs);
 
-	int return_int = PyInt_AsLong(pValue)
+	int return_int = PyInt_AsLong(pValue);
 	Py_DECREF(pValue);
 	Py_DECREF(pModule);
 	Py_DECREF(pName);
