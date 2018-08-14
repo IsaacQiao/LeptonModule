@@ -310,7 +310,8 @@ int main()
 	int temp=0;
 	int count_high=0;
 	
-	char fire_alarm = use_python_get();
+	char fire_alarm;
+	fire_alarm = use_python_get();
 		
 
 	close(fd);
