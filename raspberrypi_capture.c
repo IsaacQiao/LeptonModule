@@ -217,7 +217,7 @@ char use_python_get(){
 	Py_Finalize();
 	printf("7");
 
-	return '1';
+	return return_int;
 }
 
 void use_python_post(char * src){
@@ -313,7 +313,45 @@ int main()
 		// check the server what the state is for fire alarm
 		
 		char fire_alarm;
-		fire_alarm = use_python_get();
+
+
+		printf("0");
+
+		PyObject *pName, *pModule, *pDict, *pFunc, *pArgs, *pValue;
+		printf("1");
+
+		// Initialize the Python Interpreter
+		Py_Initialize();
+		printf("2");
+
+		// Build the name object
+		pName = PyBytes_FromString("py_function");
+		printf("3");
+
+		// Load the module object
+		pModule = PyImport_Import(pName);
+		printf("4");
+
+		// pDict is a borrowed reference 
+		pDict = PyModule_GetDict(pModule);
+		printf("5");
+
+		// pFunc is also a borrowed reference 
+		pFunc = PyDict_GetItemString(pDict, "get_intruder");
+		printf("6");
+
+		pValue = PyObject_CallObject(pFunc, NULL);
+		char return_int = PyBytes_AsString(pValue)[0];
+		Py_DECREF(pValue);
+		Py_DECREF(pModule);
+		Py_DECREF(pName);
+		Py_Finalize();
+		printf("7");
+
+		fire_alarm = return_int;
+
+
+
 		if(fire_alarm=='0'){
 
 		}else{
